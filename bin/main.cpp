@@ -4,6 +4,6 @@
 
 int main()
 {
-	auto i = crepuscule::add(9, 4);
+	auto i = 9 + 4;
 	std::cout << "The result is: " << i << std::endl;
 }

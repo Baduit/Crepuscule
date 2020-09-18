@@ -1,9 +1,12 @@
-set(SRCS ./crepuscule/crepuscule.cpp)
+set(SRCS
+    ./crepuscule/crepuscule.cpp
+    ./crepuscule/helpers.cpp
+    )
 
 
 add_library(crepuscule ${SRCS})
 
-target_compile_features(crepuscule PRIVATE cxx_std_17)
+target_compile_features(crepuscule PRIVATE cxx_std_20)
 
 target_compile_options(crepuscule
                        PRIVATE

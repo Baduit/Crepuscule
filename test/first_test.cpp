@@ -6,7 +6,7 @@ using namespace boost::ut;
 
 void first_test()
 {
-	auto i = crepuscule::add(5, 4);
+	auto i = 5 + 4;
 	expect(i == 9) << "Dummy";
 }
 
