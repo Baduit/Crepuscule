@@ -16,18 +16,18 @@ template <typename T>
 concept Delimiter = 
 	requires(T delim)
 	{
-		{ delim.begin } -> std::same_as<std::string>;
-		{ delim.end } -> std::same_as<std::string>;
+		{ delim.begin };
+		{ delim.end };
 	};
 
 
 template <Delimiter D>
-auto find_delimiter_begin(const std::vector<D>& delimiters, std::string_view begin_to_find)
+auto find_delimiter_begin(const std::vector<D>& delimiters, std::string_view str)
 {
 	return std::find(delimiters.begin, delimiters.end,
 		[&](const auto& d)
 		{
-			return d.begin == begin_to_find;
+			return str.starts_with(d.begin);
 		});
 }
 
@@ -35,17 +35,26 @@ template <typename T>
 concept CustomSequence = 
 	requires(T seq)
 	{
-		{ seq.sequence } -> std::same_as<std::string>;
-		{ seq.replacement } -> std::same_as<std::string>;
+		{ seq.sequence };
+		{ seq.replacement };
 	};
 
 template <CustomSequence CS>
-auto find_custom_sequence(const std::vector<CS>& custom_sequences, std::string_view cs_to_find)
+auto find_custom_sequence(const std::vector<CS>& custom_sequences, std::string_view str)
 {
-	return std::find(custom_sequences.begin, custom_sequences.end,
+	return std::find_if(custom_sequences.begin(), custom_sequences.end(),
 		[&](const auto& cs)
 		{
-			return cs.sequence == cs_to_find;
+			return str.starts_with(cs.sequence);
+		});
+}
+
+inline auto find_at_start(const std::vector<std::string>& elems, std::string_view str)
+{
+	return std::find_if(elems.begin(), elems.end(),
+		[&](const auto& s)
+		{
+			return str.starts_with(s);
 		});
 }
 
