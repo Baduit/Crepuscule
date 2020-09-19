@@ -9,6 +9,6 @@
 namespace crepuscule
 {
 
-std::vector<Token> tokenize(std::string_view input, const Config& config);
+Expression tokenize(std::string_view input, const Config& config);
 
 } // namespace crepuscule

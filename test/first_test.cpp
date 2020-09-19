@@ -6,12 +6,6 @@
 
 using namespace boost::ut;
 
-void first_test()
-{
-	auto i = 5 + 4;
-	expect(i == 9) << "Dummy";
-}
-
 void complete_pseudo_langage_tokenization()
 {
 	crepuscule::Config config;
@@ -86,21 +80,11 @@ void complete_pseudo_langage_tokenization()
 			}
 		)";
 	
-	auto tokens = crepuscule::tokenize(text, config);
-	for (const auto& token: tokens)
-	{
-		std::visit(
-			[&](const auto& t)
-			{
-				std::cout << t;
-			}, token);
-	}
+	auto expression = crepuscule::tokenize(text, config);
+	std::cout << expression;
 }
 
 int main()
 {
-
-
-	"check_add"_test = first_test;
 	"complete_pseudo_langage_tokenization"_test = complete_pseudo_langage_tokenization;
 }

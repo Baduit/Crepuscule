@@ -7,7 +7,7 @@
 namespace crepuscule
 {
 
-std::vector<Token> tokenize(std::string_view input, const Config& config)
+Expression tokenize(std::string_view input, const Config& config)
 {
 	Expression main_expression;
 	std::vector<Expression*> expression_stack { &main_expression };
@@ -158,7 +158,7 @@ std::vector<Token> tokenize(std::string_view input, const Config& config)
 		}
 	}
 
-	return main_expression.value;
+	return main_expression;
 }
 
 } // namespace crepuscule
