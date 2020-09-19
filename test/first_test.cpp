@@ -35,6 +35,7 @@ void complete_pseudo_langage_tokenization()
 	config.operators.push_back("*");
 	config.operators.push_back("/");
 	config.operators.push_back("%");
+	config.operators.push_back("=");
 	config.operators.push_back(";");
 
 	config.delimiters.push_back(" ");

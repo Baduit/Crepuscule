@@ -74,33 +74,6 @@ std::vector<Token> tokenize(std::string_view input, const Config& config)
 			
 			if (comment || string || subexpression || ope || delimiter)
 			{
-				auto comment_size = (comment) ? (*comment)->begin.size() : 0;
-				auto string_size = (string) ? (*string)->begin.size() : 0;
-				auto subexpression_size = (subexpression) ? (*subexpression)->begin.size() : 0;
-				auto ope_size = (ope) ? (*ope)->size() : 0;
-				auto delimiter_size = (delimiter) ? (*delimiter)->size() : 0;
-
-				auto max_size = std::max({comment_size, string_size, subexpression_size, ope_size, delimiter_size});
-				if (max_size == comment_size)
-				{
-					current_comment_delimiter.emplace(**comment);
-				}
-				else if (max_size == string_size)
-				{
-					current_string.emplace(String{ "", **string });
-				}
-				else if (max_size == subexpression_size)
-				{
-					expression_stack.back()->value.emplace_back(Expression{ {}, **subexpression });
-					auto* new_expression = std::get_if<Expression>(&(expression_stack.back()->value.back()));
-					expression_stack.push_back(new_expression);
-				}
-				else if (max_size == ope_size)
-				{
-					expression_stack.back()->value.emplace_back(Operator{ **ope });
-				}
-				// Nothing to do if it is just a delimiter
-
 				std::string_view word = std::string_view(it_token_begin, it_input);
 				if (!word.empty())
 				{
@@ -136,6 +109,33 @@ std::vector<Token> tokenize(std::string_view input, const Config& config)
 					if (!word_used)
 						expression_stack.back()->value.emplace_back(Word{ std::string(word) });
 				}
+
+				auto comment_size = (comment) ? (*comment)->begin.size() : 0;
+				auto string_size = (string) ? (*string)->begin.size() : 0;
+				auto subexpression_size = (subexpression) ? (*subexpression)->begin.size() : 0;
+				auto ope_size = (ope) ? (*ope)->size() : 0;
+				auto delimiter_size = (delimiter) ? (*delimiter)->size() : 0;
+
+				auto max_size = std::max({comment_size, string_size, subexpression_size, ope_size, delimiter_size});
+				if (max_size == comment_size)
+				{
+					current_comment_delimiter.emplace(**comment);
+				}
+				else if (max_size == string_size)
+				{
+					current_string.emplace(String{ "", **string });
+				}
+				else if (max_size == subexpression_size)
+				{
+					expression_stack.back()->value.emplace_back(Expression{ {}, **subexpression });
+					auto* new_expression = std::get_if<Expression>(&(expression_stack.back()->value.back()));
+					expression_stack.push_back(new_expression);
+				}
+				else if (max_size == ope_size)
+				{
+					expression_stack.back()->value.emplace_back(Operator{ **ope });
+				}
+				// Nothing to do if it is just a delimiter
 
 				it_input += max_size;
 				it_token_begin = it_input;
