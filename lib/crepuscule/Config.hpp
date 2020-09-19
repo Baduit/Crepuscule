@@ -5,6 +5,7 @@
 #include <functional>
 #include <string>
 #include <string_view>
+#include <optional>
 
 namespace crepuscule
 {
@@ -47,17 +48,24 @@ struct CommentDelimiter
 
 struct Config
 {
+	// Add a method to be sure all list are sorted in a way the bigger element
+	// to find in the input str is at the beginning of the vector
+	// Or maybe just use sets instead of vector ?
+	// An other solution would be to have a class Tokenizer with the config as attribute
+	// so it can have the whole control over theses data
+	// I'm still in R&D phase
+
+	// Add a way to check for incoherencies ?
 	std::vector<StringDelimiter> string_delimiters;
 	std::vector<CustomStringSequence> custom_string_sequences;
 	std::vector<std::string> operators;
 	std::vector<std::string> delimiters;
 	std::vector<std::string> keywords;
 	std::vector<SubexpressionDelimiter> subexpression_delimiters;
-	std::vector<std::string> line_comment_start;
 	std::vector<CommentDelimiter> comment_delimiters;
 
-	std::function<int (std::string_view)> integer_reader = nullptr;
-	std::function<double (std::string_view)> number_reader = nullptr;
+	std::function<std::optional<int> (std::string_view)> integer_reader = nullptr;
+	std::function<std::optional<double> (std::string_view)> number_reader = nullptr;
 };
 
 } // namespace crepuscule
