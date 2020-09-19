@@ -51,21 +51,21 @@ inline std::ostream& operator<<(std::ostream& os, const Comment& c)
 
 inline std::ostream& operator<<(std::ostream& os, const Expression& e)
 {
-	os << "Expression: ";
+	os << "Expression: \n";
 	if (e.delimiter)
-		os << e.delimiter->begin;
+		os << e.delimiter->begin << "\n";
 
 	for (const auto& token: e.value)
 	{
 		std::visit(
 			[&](const auto& t)
 			{
-				os << "\t" << t;
+				os << t;
 			}, token);
 	}
 
 	if (e.delimiter)
-		os << e.delimiter->end;
+		os << "\n" << e.delimiter->end;
 	os << "\n";
 	return os;
 }

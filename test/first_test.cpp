@@ -80,7 +80,9 @@ void complete_pseudo_langage_tokenization()
 				/*
 					THis is a comment
 				*/
-				b = 0;
+				{
+					b = 0;
+				}
 			}
 		)";
 	
