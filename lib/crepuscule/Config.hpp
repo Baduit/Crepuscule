@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include <compare>
 #include <functional>
 #include <string>
@@ -30,7 +31,11 @@ struct CustomStringSequence
 
 struct SubexpressionDelimiter
 {
-	bool operator==(const SubexpressionDelimiter&) const = default;
+	bool operator==(const SubexpressionDelimiter& other) const // If I default it it segfault, gcc bug ?
+	{
+		return begin == other.begin && end == other.end;
+	}
+
 	auto operator<=>(const SubexpressionDelimiter&) const = default;
 
 	std::string begin;

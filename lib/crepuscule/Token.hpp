@@ -46,18 +46,18 @@ struct Word
 
 struct Integer
 {
-	friend bool operator==(const Integer&, const Integer&) = default;
-	friend auto operator<=>(const Integer&, const Integer&) = default;
+	friend constexpr bool operator==(const Integer&, const Integer&) = default;
+	friend constexpr std::strong_ordering operator<=>(const Integer&, const Integer&) = default;
 
-	int value;
+	int value = 0;
 };
 
 struct Number
 {
-	friend bool operator==(const Number&, const Number&) = default;
-	friend auto operator<=>(const Number&, const Number&) = default;
+	friend constexpr bool operator==(const Number&, const Number&) = default;
+	friend constexpr std::strong_ordering operator<=>(const Number&, const Number&) = default;
 
-	double value;
+	double value = 0.0;
 };
 
 struct String
