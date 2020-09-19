@@ -4,6 +4,7 @@
 
 #include <crepuscule/Config.hpp>
 #include <crepuscule/Token.hpp>
+#include <crepuscule/TokenPrinter.hpp>
 
 namespace crepuscule
 {

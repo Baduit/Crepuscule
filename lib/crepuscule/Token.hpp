@@ -14,11 +14,11 @@ struct Integer;
 struct Number;
 struct String;
 struct Comment;
-struct MultilineComment;
+struct Comment;
 struct Expression;
 struct Operator;
 
-using Token = std::variant<Keyword, Word, Integer, Number, String, Operator, Comment, MultilineComment, Expression>;
+using Token = std::variant<Keyword, Word, Integer, Number, String, Operator, Comment, Expression>;
 
 /*
 	TODO: instead of making a deep copy of the delimiters I could:
@@ -60,16 +60,10 @@ struct Operator
 
 struct Comment
 {
-	std::string value;
-	std::string start;
-};
-
-struct MultilineComment
-{
-	MultilineComment() = default;
+	Comment() = default;
 
 	template <typename It>
-	MultilineComment(It begin_value, It end_value, const CommentDelimiter& delim):
+	Comment(It begin_value, It end_value, const CommentDelimiter& delim):
 		value(begin_value, end_value),
 		delimiter(delim)
 	{}

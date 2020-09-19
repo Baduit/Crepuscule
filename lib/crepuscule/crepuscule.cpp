@@ -10,7 +10,7 @@ namespace crepuscule
 std::vector<Token> tokenize(std::string_view input, const Config& config)
 {
 	Expression main_expression;
-	std::vector<Expression> expression_stack { main_expression };
+	std::vector<Expression*> expression_stack { &main_expression };
 
 	std::optional<String> current_string;
 	std::optional<CommentDelimiter> current_comment_delimiter;
@@ -25,7 +25,7 @@ std::vector<Token> tokenize(std::string_view input, const Config& config)
 			if (current_view.starts_with(current_comment_delimiter->end))
 			{
 				auto delimiter_size = current_comment_delimiter->end.size();
-				expression_stack.back().value.emplace_back(MultilineComment(it_token_begin, it_input, std::move(*current_comment_delimiter)));
+				expression_stack.back()->value.emplace_back(Comment(it_token_begin, it_input, std::move(*current_comment_delimiter)));
 				current_comment_delimiter.reset();
 
 				it_input += delimiter_size;
@@ -42,7 +42,7 @@ std::vector<Token> tokenize(std::string_view input, const Config& config)
 			if (current_view.starts_with(current_string->delimiter.end))
 			{
 				auto delimiter_size = current_string->delimiter.end.size();
-				expression_stack.back().value.emplace_back(std::move(*current_string));
+				expression_stack.back()->value.emplace_back(std::move(*current_string));
 				current_string.reset();
 
 				it_input += delimiter_size;
@@ -91,60 +91,63 @@ std::vector<Token> tokenize(std::string_view input, const Config& config)
 				}
 				else if (max_size == subexpression_size)
 				{
-					expression_stack.push_back(Expression{ {}, **subexpression });
+					expression_stack.back()->value.emplace_back(Expression{ {}, **subexpression });
+					auto* new_expression = std::get_if<Expression>(&(expression_stack.back()->value.back()));
+					expression_stack.push_back(new_expression);
 				}
 				else if (max_size == ope_size)
 				{
-					expression_stack.back().value.emplace_back(Operator{ **ope });
+					expression_stack.back()->value.emplace_back(Operator{ **ope });
 				}
 				// Nothing to do if it is just a delimiter
 
 				std::string_view word = std::string_view(it_token_begin, it_input);
-				bool word_used = false;
-
-				auto keyword = std::find(config.keywords.begin(), config.keywords.end(), word);
-				if (keyword != config.keywords.end())
+				if (!word.empty())
 				{
-					expression_stack.back().value.emplace_back(Keyword {*keyword});
-					word_used = true;
-				}
+					bool word_used = false;
 
-				if (!word_used && config.integer_reader)
-				{
-					auto integer = config.integer_reader(word);
-					if (integer)
+					auto keyword = std::find(config.keywords.begin(), config.keywords.end(), word);
+					if (keyword != config.keywords.end())
 					{
-						expression_stack.back().value.emplace_back(Integer{ *integer });
+						expression_stack.back()->value.emplace_back(Keyword {*keyword});
 						word_used = true;
 					}
-				}
 
-				if (!word_used && config.number_reader)
-				{
-					auto number = config.number_reader(word);
-					if (number)
+					if (!word_used && config.integer_reader)
 					{
-						expression_stack.back().value.emplace_back(Number{ *number });
-						word_used = true;
+						auto integer = config.integer_reader(word);
+						if (integer)
+						{
+							expression_stack.back()->value.emplace_back(Integer{ *integer });
+							word_used = true;
+						}
 					}
-				}
 
-				if (!word_used)
-					expression_stack.back().value.emplace_back(Word{ std::string(word) });
+					if (!word_used && config.number_reader)
+					{
+						auto number = config.number_reader(word);
+						if (number)
+						{
+							expression_stack.back()->value.emplace_back(Number{ *number });
+							word_used = true;
+						}
+					}
+
+					if (!word_used)
+						expression_stack.back()->value.emplace_back(Word{ std::string(word) });
+				}
 
 				it_input += max_size;
 				it_token_begin = it_input;
 			}
 			else
 			{
-				if (expression_stack.back().delimiter &&
-					current_view.starts_with(expression_stack.back().delimiter->end))
+				if (expression_stack.back()->delimiter &&
+					current_view.starts_with(expression_stack.back()->delimiter->end))
 				{
-					it_input += expression_stack.back().delimiter->end.size();
+					it_input += expression_stack.back()->delimiter->end.size();
 					it_token_begin = it_input;
 
-					auto previous_exp = expression_stack.end() - 1;
-					previous_exp->value.emplace_back(std::move(expression_stack.back()));
 					expression_stack.pop_back();
 				}
 				else
