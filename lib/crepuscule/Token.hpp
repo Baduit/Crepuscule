@@ -9,6 +9,8 @@
 namespace crepuscule
 {
 
+constexpr double DOUBLE_PRECISION_COMPARAISON = 0.0000001;
+
 struct Keyword;
 struct Word;
 struct Integer;
@@ -71,7 +73,12 @@ struct Number
 		value(n)
 	{}
 
-	friend constexpr bool operator==(const Number&, const Number&) = default;
+	friend constexpr bool operator==(const Number& a, const Number& b)
+	{
+		return
+			(a.value + DOUBLE_PRECISION_COMPARAISON) > b.value &&
+			(a.value - DOUBLE_PRECISION_COMPARAISON) < b.value;
+	}
 
 	double value = 0.0;
 };
