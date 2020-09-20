@@ -49,7 +49,7 @@ void ProcessingState::add_to_current_string(std::string_view str)
 
 void ProcessingState::begin_string(const StringDelimiter& delim)
 {
-	_current_string.emplace("", delim);
+	_current_string.emplace(delim);
 }
 
 void ProcessingState::begin_comment(const CommentDelimiter& delim)
@@ -59,7 +59,7 @@ void ProcessingState::begin_comment(const CommentDelimiter& delim)
 
 void ProcessingState::begin_expression(const SubexpressionDelimiter& delim)
 {
-	emplace_token<Expression>(std::vector<Token>{}, delim);
+	emplace_token<Expression>(delim);
 	auto* new_expression = std::get_if<Expression>(&(_expression_stack.back()->value.back()));
 	_expression_stack.push_back(new_expression);
 }
