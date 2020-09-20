@@ -10,7 +10,7 @@ TODO
 # Example
 TODO
 
-# Integrate it in your project
+# How to use it in your project
 First solution: use cmake
 
 Second solution: build it, include the file \<crepuscule/crepuscule.hpp> and link your project with the builded library
