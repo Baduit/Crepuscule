@@ -18,17 +18,18 @@ ProcessingState::operator bool() const
 
 std::string_view ProcessingState::get_current_view() const
 {
-	return std::string_view(_it_input, _it_end);
+	// MSVC does not support this for now
+	//return std::string_view(_it_input, _it_end);
+	auto size = static_cast<std::size_t>(_it_end - _it_input);
+	return std::string_view(&(*_it_input), size);
 }
 
 std::string_view ProcessingState::get_current_word() const
 {
-	return std::string_view(_it_token_begin, _it_input);
-}
-
-void ProcessingState::advance_input(int i)
-{
-	_it_input += i;
+	// MSVC does not support this for now
+	//return std::string_view(_it_token_begin, _it_input);
+	auto size = static_cast<std::size_t>(_it_input - _it_token_begin);
+	return std::string_view(&(*_it_token_begin), size);
 }
 
 void ProcessingState::update_token_begin()

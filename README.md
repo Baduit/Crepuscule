@@ -35,12 +35,12 @@ So, I have written this, it only tokenizes (no parsing); the configuration use a
 
 # Build
 You need a recent cmake and a recent compiler supporting c++20
-I use gcc 10.1.0 and cmake 3.16.1
+On my Ubuntu wsl I use gcc 10.1.0 and cmake 3.16.1.
+On my Windows 10 I use the compiler shipped with Visual Studio 16.7.3 and cmake 3.18.1
 
 ## TODO:
 ### Things I will do
 - Refactor the main loop in the tokenisation
-- Support msvc
 - Tutorial
 ### Things I should do but I probably won't because of my lazyness
 - A header only version in 1 file only

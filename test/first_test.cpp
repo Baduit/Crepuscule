@@ -122,7 +122,8 @@ void complete_pseudo_langage_tokenization()
 	expect(expression.value[18] == crepuscule::Token(crepuscule::Keyword("if"))) << "Condition: keyword if";
 	auto* condition_expression = std::get_if<crepuscule::Expression>(&(expression.value[19]));
 	expect((condition_expression) >> fatal) << "This is an expression";
-	expect(condition_expression->delimiter && condition_expression->delimiter.value() == crepuscule::SubexpressionDelimiter("(", ")")) << "The delimiter are ()";
+	expect((condition_expression->delimiter.has_value()) >> fatal) << "The delimiter are ()";
+	expect(condition_expression->delimiter.value() == crepuscule::SubexpressionDelimiter{"(", ")"}) << "The delimiter are ()";
 	expect(condition_expression->value.size() == 7) << "Enough token in the expression";
 	expect(condition_expression->value[0] == crepuscule::Token(crepuscule::Word("i"))) << "Condition: word i";
 	expect(condition_expression->value[1] == crepuscule::Token(crepuscule::Operator("=="))) << "Condition: operator ==";

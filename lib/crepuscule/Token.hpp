@@ -30,6 +30,11 @@ using Token = std::variant<Keyword, Word, Integer, Number, String, Operator, Com
 
 struct Keyword
 {
+	Keyword() = default;
+	Keyword(std::string str):
+		value(std::move(str))
+	{}
+
 	friend bool operator==(const Keyword&, const Keyword&) = default;
 
 	std::string value;
@@ -37,6 +42,11 @@ struct Keyword
 
 struct Word
 {
+	Word() = default;
+	Word(std::string str):
+		value(std::move(str))
+	{}
+
 	friend bool operator==(const Word&, const Word&) = default;
 
 	std::string value;
@@ -44,6 +54,11 @@ struct Word
 
 struct Integer
 {
+	constexpr Integer() = default;
+	constexpr Integer(int i):
+		value(i)
+	{}
+
 	friend constexpr bool operator==(const Integer&, const Integer&) = default;
 
 	int value = 0;
@@ -51,6 +66,11 @@ struct Integer
 
 struct Number
 {
+	constexpr Number() = default;
+	constexpr Number(double n):
+		value(n)
+	{}
+
 	friend constexpr bool operator==(const Number&, const Number&) = default;
 
 	double value = 0.0;
@@ -58,6 +78,16 @@ struct Number
 
 struct String
 {
+	String() = default;
+	String(StringDelimiter delim):
+		value(),
+		delimiter(std::move(delim))
+	{}
+	String(std::string str, StringDelimiter delim):
+		value(std::move(str)),
+		delimiter(std::move(delim))
+	{}
+
 	friend bool operator==(const String&, const String&) = default;
 
 	std::string value;
@@ -66,6 +96,11 @@ struct String
 
 struct Operator
 {
+	Operator() = default;
+	Operator(std::string str):
+		value(std::move(str))
+	{}
+
 	friend bool operator==(const Operator&, const Operator&) = default;
 
 	std::string value;
@@ -93,6 +128,19 @@ struct Comment
 
 struct Expression
 {
+	Expression() = default;
+	Expression(std::vector<Token> t):
+		value(std::move(t))
+	{}
+	Expression(std::vector<Token> t, SubexpressionDelimiter delim):
+		value(std::move(t)),
+		delimiter(std::move(delim))
+	{}
+	Expression(SubexpressionDelimiter delim):
+		value(),
+		delimiter(std::move(delim))
+	{}
+
 	friend bool operator==(const Expression&, const Expression&) = default;
 
 	std::vector<Token> value;

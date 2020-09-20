@@ -1,5 +1,7 @@
 #pragma once		
 
+#include <concepts>
+
 #include <crepuscule/Token.hpp>
 
 namespace crepuscule
@@ -15,7 +17,12 @@ class ProcessingState
 		std::string_view get_current_view() const;
 		std::string_view get_current_word() const;
 
-		void advance_input(int i);
+		template <std::integral I>
+		void advance_input(I i)
+		{
+			_it_input += i;
+		}
+
 		void update_token_begin();
 
 		void add_current_char_to_current_string();

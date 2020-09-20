@@ -150,7 +150,7 @@ void Tokenizer::prepare_config()
 	auto sort_descending = 
 		[](const auto& a, const auto& b)
 		{
-			return a >= b;
+			return !(a < b);
 		};
 
 	std::sort(_config.string_delimiters.begin(), _config.string_delimiters.end(), sort_descending);
