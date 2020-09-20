@@ -10,7 +10,9 @@ namespace crepuscule
 
 Tokenizer::Tokenizer(Config conf):
 	_config(std::move(conf))
-{}
+{
+	prepare_config();
+}
 
 Expression Tokenizer::operator()(std::string_view input)
 {
@@ -141,6 +143,23 @@ Expression Tokenizer::operator()(std::string_view input)
 	}
 
 	return main_expression;
+}
+
+void Tokenizer::prepare_config()
+{
+	auto sort_descending = 
+		[](const auto& a, const auto& b)
+		{
+			return a >= b;
+		};
+
+	std::sort(_config.string_delimiters.begin(), _config.string_delimiters.end(), sort_descending);
+	std::sort(_config.operators.begin(), _config.operators.end(), sort_descending);
+	std::sort(_config.delimiters.begin(), _config.delimiters.end(), sort_descending);
+	std::sort(_config.keywords.begin(), _config.keywords.end(), sort_descending);
+	std::sort(_config.custom_string_sequences.begin(), _config.custom_string_sequences.end(), sort_descending);
+	std::sort(_config.subexpression_delimiters.begin(), _config.subexpression_delimiters.end(), sort_descending);
+	std::sort(_config.comment_delimiters.begin(), _config.comment_delimiters.end(), sort_descending);
 }
 
 } // namespace crepuscule

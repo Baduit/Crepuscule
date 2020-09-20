@@ -39,7 +39,6 @@ I use gcc 10.1.0 and cmake 3.16.1
 
 ## TODO:
 ### Things I will do
-- Handle the sorting of the elements in the config
 - Refactor the main loop in the tokenisation
 - Support msvc
 - Tutorial

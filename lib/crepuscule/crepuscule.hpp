@@ -18,7 +18,6 @@ class Tokenizer
 
 	private:
 		void prepare_config();
-		bool is_config_prepared() const;
 
 	private:
 		Config _config;

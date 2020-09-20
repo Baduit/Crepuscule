@@ -14,7 +14,11 @@ namespace crepuscule
 struct StringDelimiter
 {
 	bool operator==(const StringDelimiter&) const = default;
-	auto operator<=>(const StringDelimiter&) const = default;
+	auto operator<=>(const StringDelimiter& other) const
+	{
+		// Only the begin matters when sorting
+		return begin <=> other.begin;
+	}
 
 	std::string begin;
 	std::string end;
@@ -23,7 +27,11 @@ struct StringDelimiter
 struct CustomStringSequence
 {
 	bool operator==(const CustomStringSequence&) const = default;
-	auto operator<=>(const CustomStringSequence&) const = default;
+	auto operator<=>(const CustomStringSequence& other) const
+	{
+		// Only the sequence matters when sorting
+		return sequence <=> other.sequence;
+	}
 
 	std::string sequence;
 	std::string replacement;
@@ -31,12 +39,17 @@ struct CustomStringSequence
 
 struct SubexpressionDelimiter
 {
-	bool operator==(const SubexpressionDelimiter& other) const // If I default it it segfault, gcc bug ?
+	 // If I default it it segfault (infinite loop of calling this operator making it stackoverflow), gcc bug ?
+	bool operator==(const SubexpressionDelimiter& other) const
 	{
 		return begin == other.begin && end == other.end;
 	}
 
-	auto operator<=>(const SubexpressionDelimiter&) const = default;
+	auto operator<=>(const SubexpressionDelimiter& other) const
+	{
+		// Only the begin matters when sorting
+		return begin <=> other.begin;
+	}
 
 	std::string begin;
 	std::string end;
@@ -45,7 +58,11 @@ struct SubexpressionDelimiter
 struct CommentDelimiter
 {
 	bool operator==(const CommentDelimiter&) const = default;
-	auto operator<=>(const CommentDelimiter&) const = default;
+	auto operator<=>(const CommentDelimiter& other) const
+	{
+		// Only the begin matters when sorting
+		return begin <=> other.begin;
+	}
 
 	std::string begin;
 	std::string end;
@@ -53,13 +70,6 @@ struct CommentDelimiter
 
 struct Config
 {
-	// Add a method to be sure all list are sorted in a way the bigger element
-	// to find in the input str is at the beginning of the vector
-	// Or maybe just use sets instead of vector ?
-	// An other solution would be to have a class Tokenizer with the config as attribute
-	// so it can have the whole control over theses data
-	// I'm still in R&D phase
-
 	// Add a way to check for incoherencies ?
 	std::vector<StringDelimiter> string_delimiters;
 	std::vector<CustomStringSequence> custom_string_sequences;
