@@ -1,6 +1,7 @@
 set(SRCS
     ./crepuscule/crepuscule.cpp
     ./crepuscule/helpers.cpp
+    ./crepuscule/TokenizingState.cpp
     )
 
 

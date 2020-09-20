@@ -3,6 +3,7 @@
 
 #include <crepuscule/crepuscule.hpp>
 #include <crepuscule/helpers.hpp>
+#include <crepuscule/TokenizingState.hpp>
 
 namespace crepuscule
 {
@@ -13,57 +14,40 @@ Tokenizer::Tokenizer(Config conf):
 
 Expression Tokenizer::operator()(std::string_view input)
 {
-		Expression main_expression;
-	std::vector<Expression*> expression_stack { &main_expression };
+	Expression main_expression;
+	ProcessingState state(input, main_expression);
 
-	std::optional<String> current_string;
-	std::optional<CommentDelimiter> current_comment_delimiter;
-
-	auto it_input = input.begin();
-	auto it_token_begin = it_input;
-	while (it_input != input.end())
+	while (state)
 	{
-		std::string_view current_view = std::string_view(it_input, input.end());
-		if (current_comment_delimiter)
+		std::string_view current_view = state.get_current_view();
+		if (auto comment_end_delimiter = state.get_current_comment_end_delimiter();
+			comment_end_delimiter)
 		{
-			if (current_view.starts_with(current_comment_delimiter->end))
-			{
-				auto delimiter_size = current_comment_delimiter->end.size();
-				expression_stack.back()->value.emplace_back(Comment(it_token_begin, it_input, std::move(*current_comment_delimiter)));
-				current_comment_delimiter.reset();
-
-				it_input += delimiter_size;
-				it_token_begin = it_input;
-			}
+			if (current_view.starts_with(*comment_end_delimiter))
+				state.close_current_comment();
 			else
-			{
-				++it_input;
-			}
+				state.advance_input(1);
 		}
-		else if (current_string)
+		else if (auto string_end_delimiter = state.get_current_string_end_delimiter();
+				string_end_delimiter)
 		{
 			// TODO: This part can probably a bit optimized
-			if (current_view.starts_with(current_string->delimiter.end))
+			if (current_view.starts_with(*string_end_delimiter))
 			{
-				auto delimiter_size = current_string->delimiter.end.size();
-				expression_stack.back()->value.emplace_back(std::move(*current_string));
-				current_string.reset();
-
-				it_input += delimiter_size;
-				it_token_begin = it_input;
+				state.close_current_string();
 			}
 			else
 			{
 				if (auto custom_sequence = helpers::find_custom_sequence(_config.custom_string_sequences, current_view);
 					custom_sequence != _config.custom_string_sequences.end())
 				{
-					current_string->value += custom_sequence->replacement;
-					it_input += custom_sequence->sequence.size();
+					state.add_to_current_string(custom_sequence->replacement);
+					state.advance_input(custom_sequence->sequence.size());
 				}
 				else
 				{
-					current_string->value += *it_input;
-					++it_input;
+					state.add_current_char_to_current_string();
+					state.advance_input(1);
 				}
 			}
 		}
@@ -78,7 +62,7 @@ Expression Tokenizer::operator()(std::string_view input)
 			
 			if (comment || string || subexpression || ope || delimiter)
 			{
-				std::string_view word = std::string_view(it_token_begin, it_input);
+				std::string_view word = state.get_current_word();
 				if (!word.empty())
 				{
 					bool word_used = false;
@@ -86,7 +70,7 @@ Expression Tokenizer::operator()(std::string_view input)
 					auto keyword = std::find(_config.keywords.begin(), _config.keywords.end(), word);
 					if (keyword != _config.keywords.end())
 					{
-						expression_stack.back()->value.emplace_back(Keyword {*keyword});
+						state.emplace_token<Keyword>(*keyword);
 						word_used = true;
 					}
 
@@ -95,7 +79,7 @@ Expression Tokenizer::operator()(std::string_view input)
 						auto integer = _config.integer_reader(word);
 						if (integer)
 						{
-							expression_stack.back()->value.emplace_back(Integer{ *integer });
+							state.emplace_token<Integer>(*integer);
 							word_used = true;
 						}
 					}
@@ -105,13 +89,12 @@ Expression Tokenizer::operator()(std::string_view input)
 						auto number = _config.number_reader(word);
 						if (number)
 						{
-							expression_stack.back()->value.emplace_back(Number{ *number });
-							word_used = true;
+							state.emplace_token<Number>(*number);							word_used = true;
 						}
 					}
 
 					if (!word_used)
-						expression_stack.back()->value.emplace_back(Word{ std::string(word) });
+						state.emplace_token<Word>(std::string(word));
 				}
 
 				auto comment_size = (comment) ? (*comment)->begin.size() : 0;
@@ -123,40 +106,35 @@ Expression Tokenizer::operator()(std::string_view input)
 				auto max_size = std::max({comment_size, string_size, subexpression_size, ope_size, delimiter_size});
 				if (max_size == comment_size)
 				{
-					current_comment_delimiter.emplace(**comment);
+					state.begin_comment(**comment);
 				}
 				else if (max_size == string_size)
 				{
-					current_string.emplace(String{ "", **string });
+					state.begin_string(**string);
 				}
 				else if (max_size == subexpression_size)
 				{
-					expression_stack.back()->value.emplace_back(Expression{ {}, **subexpression });
-					auto* new_expression = std::get_if<Expression>(&(expression_stack.back()->value.back()));
-					expression_stack.push_back(new_expression);
+					state.begin_expression(**subexpression);
 				}
 				else if (max_size == ope_size)
 				{
-					expression_stack.back()->value.emplace_back(Operator{ **ope });
+					state.emplace_token<Operator>(**ope);
 				}
 				// Nothing to do if it is just a delimiter
 
-				it_input += max_size;
-				it_token_begin = it_input;
+				state.advance_input(max_size);
+				state.update_token_begin();
 			}
 			else
 			{
-				if (expression_stack.back()->delimiter &&
-					current_view.starts_with(expression_stack.back()->delimiter->end))
+				if (auto expression_delim = state.get_current_expression_end_delimiter();
+					expression_delim && current_view.starts_with(*expression_delim))
 				{
-					it_input += expression_stack.back()->delimiter->end.size();
-					it_token_begin = it_input;
-
-					expression_stack.pop_back();
+					state.close_current_expression();
 				}
 				else
 				{
-					++it_input;
+					state.advance_input(1);
 				}
 			}
 		}

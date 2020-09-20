@@ -83,15 +83,16 @@ void complete_pseudo_langage_tokenization()
 		)";
 	
 	auto expression = crepuscule::Tokenizer(config)(text);
-	//std::cout << expression;
 
-	expect(!expression.delimiter) << "The main expression does not have delimiter";
+	expect((!expression.delimiter) >> fatal) << "The main expression does not have delimiter";
 	expect(expression.value.size() == 21) << "Check number of tokens";
 
 	// 1st line
+	expect((expression.value.size() > 0) >> fatal);
 	expect(expression.value[0] == crepuscule::Token(crepuscule::Comment(" Declare some variables", "//", "\n"))) << "First line is a comment";
 
 	// 1st assigment
+	expect((expression.value.size() > 5) >> fatal);
 	expect(expression.value[1] == crepuscule::Token(crepuscule::Keyword("var"))) << "First assigment: keyword var";
 	expect(expression.value[2] == crepuscule::Token(crepuscule::Word("i"))) << "First assigment: word i";
 	expect(expression.value[3] == crepuscule::Token(crepuscule::Operator("="))) << "First assigment: operator =";
@@ -99,6 +100,7 @@ void complete_pseudo_langage_tokenization()
 	expect(expression.value[5] == crepuscule::Token(crepuscule::Operator(";"))) << "First assigment: operator ;";
 
 	// 2nd assigment
+	expect((expression.value.size() > 12) >> fatal);
 	expect(expression.value[6] == crepuscule::Token(crepuscule::Keyword("var"))) << "Second assigment: keyword var";
 	expect(expression.value[7] == crepuscule::Token(crepuscule::Word("b"))) << "Second assigment: word b";
 	expect(expression.value[8] == crepuscule::Token(crepuscule::Operator("="))) << "Second assigment: operator =";
@@ -108,6 +110,7 @@ void complete_pseudo_langage_tokenization()
 	expect(expression.value[12] == crepuscule::Token(crepuscule::Operator(";"))) << "Second assigment: operator ;";
 
 	// 3rd assigment
+	expect((expression.value.size() > 17) >> fatal);
 	expect(expression.value[13] == crepuscule::Token(crepuscule::Keyword("var"))) << "Third assigment: keyword var";
 	expect(expression.value[14] == crepuscule::Token(crepuscule::Word("str"))) << "Third assigment: word str";
 	expect(expression.value[15] == crepuscule::Token(crepuscule::Operator("="))) << "Third assigment: operator =";
@@ -115,9 +118,10 @@ void complete_pseudo_langage_tokenization()
 	expect(expression.value[17] == crepuscule::Token(crepuscule::Operator(";"))) << "Third assigment: operator ;";
 
 	// Condition
+	expect((expression.value.size() > 19) >> fatal);
 	expect(expression.value[18] == crepuscule::Token(crepuscule::Keyword("if"))) << "Condition: keyword if";
 	auto* condition_expression = std::get_if<crepuscule::Expression>(&(expression.value[19]));
-	expect(condition_expression) << "This is an expression";
+	expect((condition_expression) >> fatal) << "This is an expression";
 	expect(condition_expression->delimiter && condition_expression->delimiter.value() == crepuscule::SubexpressionDelimiter("(", ")")) << "The delimiter are ()";
 	expect(condition_expression->value.size() == 7) << "Enough token in the expression";
 	expect(condition_expression->value[0] == crepuscule::Token(crepuscule::Word("i"))) << "Condition: word i";
@@ -129,11 +133,12 @@ void complete_pseudo_langage_tokenization()
 	expect(condition_expression->value[6] == crepuscule::Token(crepuscule::String("\"", { "\"", "\"" }))) << "Condition string \"\"\"";
 
 	// Conditionnaly executed part
+	expect((expression.value.size() > 20) >> fatal);
 	auto* conditionnaly_executed_part = std::get_if<crepuscule::Expression>(&(expression.value[20]));
-	expect(conditionnaly_executed_part) << "This is an expression";
+	expect((conditionnaly_executed_part) >> fatal) << "This is an expression";
 	expect(conditionnaly_executed_part->value[0] == crepuscule::Token(crepuscule::Comment("\n\t\t\t\t\tTHis is a comment\n\t\t\t\t", "/*", "*/"))) << "Conditionnaly executed part: comment";
 	auto* subexpression = std::get_if<crepuscule::Expression>(&(conditionnaly_executed_part->value[1]));
-	expect(subexpression) << "There is a subexpression";
+	expect((subexpression) >> fatal) << "There is a subexpression";
 	expect(subexpression->value[0] == crepuscule::Token(crepuscule::Word("b"))) << "subexpression: word b";
 	expect(subexpression->value[1] == crepuscule::Token(crepuscule::Operator("="))) << "subexpression: operator =";
 	expect(subexpression->value[2] == crepuscule::Token(crepuscule::Integer(0))) << "subexpression: integer 0";
