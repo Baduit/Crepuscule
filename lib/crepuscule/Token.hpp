@@ -31,7 +31,6 @@ using Token = std::variant<Keyword, Word, Integer, Number, String, Operator, Com
 struct Keyword
 {
 	friend bool operator==(const Keyword&, const Keyword&) = default;
-	friend auto operator<=>(const Keyword&, const Keyword&) = default;
 
 	std::string value;
 };
@@ -39,7 +38,6 @@ struct Keyword
 struct Word
 {
 	friend bool operator==(const Word&, const Word&) = default;
-	friend auto operator<=>(const Word&, const Word&) = default;
 
 	std::string value;
 };
@@ -47,7 +45,6 @@ struct Word
 struct Integer
 {
 	friend constexpr bool operator==(const Integer&, const Integer&) = default;
-	friend constexpr std::strong_ordering operator<=>(const Integer&, const Integer&) = default;
 
 	int value = 0;
 };
@@ -55,7 +52,6 @@ struct Integer
 struct Number
 {
 	friend constexpr bool operator==(const Number&, const Number&) = default;
-	friend constexpr std::strong_ordering operator<=>(const Number&, const Number&) = default;
 
 	double value = 0.0;
 };
@@ -63,7 +59,6 @@ struct Number
 struct String
 {
 	friend bool operator==(const String&, const String&) = default;
-	friend auto operator<=>(const String&, const String&) = default;
 
 	std::string value;
 	StringDelimiter delimiter;
@@ -72,7 +67,6 @@ struct String
 struct Operator
 {
 	friend bool operator==(const Operator&, const Operator&) = default;
-	friend auto operator<=>(const Operator&, const Operator&) = default;
 
 	std::string value;
 };
@@ -92,7 +86,6 @@ struct Comment
 	{}
 
 	friend bool operator==(const Comment&, const Comment&) = default;
-	friend auto operator<=>(const Comment&, const Comment&) = default;
 
 	std::string value;
 	CommentDelimiter delimiter;
@@ -101,7 +94,6 @@ struct Comment
 struct Expression
 {
 	friend bool operator==(const Expression&, const Expression&) = default;
-	friend auto operator<=>(const Expression&, const Expression&) = default;
 
 	std::vector<Token> value;
 	std::optional<SubexpressionDelimiter> delimiter;
