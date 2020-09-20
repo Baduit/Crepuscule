@@ -7,9 +7,13 @@
 namespace crepuscule
 {
 
-Expression tokenize(std::string_view input, const Config& config)
+Tokenizer::Tokenizer(Config conf):
+	_config(std::move(conf))
+{}
+
+Expression Tokenizer::operator()(std::string_view input)
 {
-	Expression main_expression;
+		Expression main_expression;
 	std::vector<Expression*> expression_stack { &main_expression };
 
 	std::optional<String> current_string;
@@ -50,8 +54,8 @@ Expression tokenize(std::string_view input, const Config& config)
 			}
 			else
 			{
-				if (auto custom_sequence = helpers::find_custom_sequence(config.custom_string_sequences, current_view);
-					custom_sequence != config.custom_string_sequences.end())
+				if (auto custom_sequence = helpers::find_custom_sequence(_config.custom_string_sequences, current_view);
+					custom_sequence != _config.custom_string_sequences.end())
 				{
 					current_string->value += custom_sequence->replacement;
 					it_input += custom_sequence->sequence.size();
@@ -65,11 +69,11 @@ Expression tokenize(std::string_view input, const Config& config)
 		}
 		else
 		{
-			auto comment = helpers::to_optional_it(helpers::find_delimiter_begin(config.comment_delimiters, current_view), config.comment_delimiters.end());
-			auto string = helpers::to_optional_it(helpers::find_delimiter_begin(config.string_delimiters, current_view), config.string_delimiters.end());
-			auto subexpression = helpers::to_optional_it(helpers::find_delimiter_begin(config.subexpression_delimiters, current_view), config.subexpression_delimiters.end());
-			auto ope = helpers::to_optional_it(helpers::find_at_start(config.operators, current_view), config.operators.end());
-			auto delimiter = helpers::to_optional_it(helpers::find_at_start(config.delimiters, current_view), config.delimiters.end());
+			auto comment = helpers::to_optional_it(helpers::find_delimiter_begin(_config.comment_delimiters, current_view), _config.comment_delimiters.cend());
+			auto string = helpers::to_optional_it(helpers::find_delimiter_begin(_config.string_delimiters, current_view), _config.string_delimiters.cend());
+			auto subexpression = helpers::to_optional_it(helpers::find_delimiter_begin(_config.subexpression_delimiters, current_view), _config.subexpression_delimiters.cend());
+			auto ope = helpers::to_optional_it(helpers::find_at_start(_config.operators, current_view), _config.operators.cend());
+			auto delimiter = helpers::to_optional_it(helpers::find_at_start(_config.delimiters, current_view), _config.delimiters.cend());
 			
 			
 			if (comment || string || subexpression || ope || delimiter)
@@ -79,16 +83,16 @@ Expression tokenize(std::string_view input, const Config& config)
 				{
 					bool word_used = false;
 
-					auto keyword = std::find(config.keywords.begin(), config.keywords.end(), word);
-					if (keyword != config.keywords.end())
+					auto keyword = std::find(_config.keywords.begin(), _config.keywords.end(), word);
+					if (keyword != _config.keywords.end())
 					{
 						expression_stack.back()->value.emplace_back(Keyword {*keyword});
 						word_used = true;
 					}
 
-					if (!word_used && config.integer_reader)
+					if (!word_used && _config.integer_reader)
 					{
-						auto integer = config.integer_reader(word);
+						auto integer = _config.integer_reader(word);
 						if (integer)
 						{
 							expression_stack.back()->value.emplace_back(Integer{ *integer });
@@ -96,9 +100,9 @@ Expression tokenize(std::string_view input, const Config& config)
 						}
 					}
 
-					if (!word_used && config.number_reader)
+					if (!word_used && _config.number_reader)
 					{
-						auto number = config.number_reader(word);
+						auto number = _config.number_reader(word);
 						if (number)
 						{
 							expression_stack.back()->value.emplace_back(Number{ *number });

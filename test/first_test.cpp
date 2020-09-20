@@ -82,7 +82,7 @@ void complete_pseudo_langage_tokenization()
 			}
 		)";
 	
-	auto expression = crepuscule::tokenize(text, config);
+	auto expression = crepuscule::Tokenizer(config)(text);
 	//std::cout << expression;
 
 	expect(!expression.delimiter) << "The main expression does not have delimiter";

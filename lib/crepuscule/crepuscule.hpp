@@ -8,6 +8,15 @@
 namespace crepuscule
 {
 
-Expression tokenize(std::string_view input, const Config& config);
+class Tokenizer
+{
+	public:
+		Tokenizer(Config conf);
+
+		Expression operator()(std::string_view input);
+
+	private:
+		Config _config;
+};
 
 } // namespace crepuscule

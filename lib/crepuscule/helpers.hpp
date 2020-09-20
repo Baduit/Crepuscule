@@ -25,7 +25,7 @@ concept Delimiter =
 template <Delimiter D>
 auto find_delimiter_begin(const std::vector<D>& delimiters, std::string_view str)
 {
-	return std::find_if(delimiters.begin(), delimiters.end(),
+	return std::find_if(delimiters.cbegin(), delimiters.cend(),
 		[&](const auto& d)
 		{
 			return str.starts_with(d.begin);
@@ -43,7 +43,7 @@ concept CustomSequence =
 template <CustomSequence CS>
 auto find_custom_sequence(const std::vector<CS>& custom_sequences, std::string_view str)
 {
-	return std::find_if(custom_sequences.begin(), custom_sequences.end(),
+	return std::find_if(custom_sequences.cbegin(), custom_sequences.cend(),
 		[&](const auto& cs)
 		{
 			return str.starts_with(cs.sequence);
@@ -52,7 +52,7 @@ auto find_custom_sequence(const std::vector<CS>& custom_sequences, std::string_v
 
 inline auto find_at_start(const std::vector<std::string>& elems, std::string_view str)
 {
-	return std::find_if(elems.begin(), elems.end(),
+	return std::find_if(elems.cbegin(), elems.cend(),
 		[&](const auto& s)
 		{
 			return str.starts_with(s);
