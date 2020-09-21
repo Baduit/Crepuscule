@@ -43,6 +43,7 @@ On my Windows 10 I use the compiler shipped with Visual Studio 16.7.3 and cmake 
 - Refactor the main loop in the tokenisation
 - Tutorial
 ### Things I should do but I probably won't because of my lazyness
+- Support any std::string/std::string_view like type and make the used type configurable
 - A header only version in 1 file only
 - Complete the tests
 - Optimize it
