@@ -40,6 +40,7 @@ On my Windows 10 I use the compiler shipped with Visual Studio 16.7.3 and cmake 
 
 ## TODO:
 ### Things I will do
+- Possibility to have additionnal informations in each token like the line number, get the content of a line etc. It would really be usefull to create a parser.
 - Refactor the main loop in the tokenisation
 - Tutorial
 ### Things I should do but I probably won't because of my lazyness
