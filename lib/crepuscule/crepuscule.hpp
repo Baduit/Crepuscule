@@ -20,7 +20,8 @@ struct Result
 class Tokenizer
 {
 	public:
-		Tokenizer(Config conf);
+		Tokenizer(const Config& conf);
+		Tokenizer(Config&& conf);
 
 		Result operator()(std::string_view input) const;
 

@@ -8,7 +8,13 @@
 namespace crepuscule
 {
 
-Tokenizer::Tokenizer(Config conf):
+Tokenizer::Tokenizer(const Config& conf):
+	_config(conf)
+{
+	prepare_config();
+}
+
+Tokenizer::Tokenizer(Config&& conf):
 	_config(std::move(conf))
 {
 	prepare_config();
