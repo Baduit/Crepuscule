@@ -20,16 +20,6 @@ Tokenizer::Tokenizer(Config&& conf):
 	prepare_config();
 }
 
-auto Tokenizer::get_it_delimiters(std::string_view current_view) const
-{
-	auto comment = helpers::to_optional_it(helpers::find_delimiter_begin(_config.comment_delimiters, current_view), _config.comment_delimiters.cend());
-	auto string = helpers::to_optional_it(helpers::find_delimiter_begin(_config.string_delimiters, current_view), _config.string_delimiters.cend());
-	auto subexpression = helpers::to_optional_it(helpers::find_delimiter_begin(_config.subexpression_delimiters, current_view), _config.subexpression_delimiters.cend());
-	auto ope = helpers::to_optional_it(helpers::find_at_start(_config.operators, current_view), _config.operators.cend());
-	auto delimiter = helpers::to_optional_it(helpers::find_at_start(_config.delimiters, current_view), _config.delimiters.cend());
-	return std::tuple(comment, string, subexpression, ope, delimiter);
-}
-
 Result Tokenizer::operator()(std::string_view input) const
 {
 	Result result;
@@ -78,6 +68,16 @@ void Tokenizer::prepare_config()
 	std::sort(_config.custom_string_sequences.begin(), _config.custom_string_sequences.end(), sort_descending);
 	std::sort(_config.subexpression_delimiters.begin(), _config.subexpression_delimiters.end(), sort_descending);
 	std::sort(_config.comment_delimiters.begin(), _config.comment_delimiters.end(), sort_descending);
+}
+
+auto Tokenizer::get_it_delimiters(std::string_view current_view) const
+{
+	auto comment = helpers::to_optional_it(helpers::find_delimiter_begin(_config.comment_delimiters, current_view), _config.comment_delimiters.cend());
+	auto string = helpers::to_optional_it(helpers::find_delimiter_begin(_config.string_delimiters, current_view), _config.string_delimiters.cend());
+	auto subexpression = helpers::to_optional_it(helpers::find_delimiter_begin(_config.subexpression_delimiters, current_view), _config.subexpression_delimiters.cend());
+	auto ope = helpers::to_optional_it(helpers::find_at_start(_config.operators, current_view), _config.operators.cend());
+	auto delimiter = helpers::to_optional_it(helpers::find_at_start(_config.delimiters, current_view), _config.delimiters.cend());
+	return std::tuple(comment, string, subexpression, ope, delimiter);
 }
 
 Tokenizer::IterationState Tokenizer::handle_end_comment(ProcessingState& state) const
