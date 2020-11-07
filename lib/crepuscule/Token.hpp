@@ -3,6 +3,7 @@
 #include <variant>
 #include <optional>
 #include <compare>
+#include <limits>
 
 #include <crepuscule/Config.hpp>
 
@@ -27,48 +28,56 @@ using Token = std::variant<Keyword, Word, Integer, Number, String, Operator, Com
 	TODO: No deep copies of the delimiters, use view over something stored in the result
 */
 
+constexpr std::size_t INVALID_LINE_NUMBER = std::numeric_limits<std::size_t>::max();
 
 struct Keyword
 {
 	Keyword() = default;
-	Keyword(std::string str):
-		value(std::move(str))
+	Keyword(std::string str, std::size_t l):
+		value(std::move(str)),
+		line(l)
 	{}
 
 	friend bool operator==(const Keyword&, const Keyword&) = default;
 
 	std::string value;
+	std::size_t line = INVALID_LINE_NUMBER;
 };
 
 struct Word
 {
 	Word() = default;
-	Word(std::string str):
-		value(std::move(str))
+	Word(std::string str, std::size_t l):
+		value(std::move(str)),
+		line(l)
 	{}
 
 	friend bool operator==(const Word&, const Word&) = default;
 
 	std::string value;
+	std::size_t line = INVALID_LINE_NUMBER;
 };
 
 struct Integer
 {
 	constexpr Integer() = default;
-	constexpr Integer(int i):
-		value(i)
+	constexpr Integer(int i, std::size_t l):
+		value(i),
+		line(l)
 	{}
 
 	friend constexpr bool operator==(const Integer&, const Integer&) = default;
 
 	int value = 0;
+	std::size_t line = INVALID_LINE_NUMBER;
 };
 
 struct Number
 {
 	constexpr Number() = default;
-	constexpr Number(double n):
-		value(n)
+	constexpr Number(double n, std::size_t l):
+		value(n),
+		line(l)
 	{}
 
 	friend constexpr bool operator==(const Number& a, const Number& b)
@@ -79,36 +88,42 @@ struct Number
 	}
 
 	double value = 0.0;
+	std::size_t line = INVALID_LINE_NUMBER;
 };
 
 struct String
 {
 	String() = default;
-	String(StringDelimiter delim):
+	String(StringDelimiter delim, std::size_t l):
 		value(),
-		delimiter(std::move(delim))
+		delimiter(std::move(delim)),
+		line(l)
 	{}
-	String(std::string str, StringDelimiter delim):
+	String(std::string str, StringDelimiter delim, std::size_t l):
 		value(std::move(str)),
-		delimiter(std::move(delim))
+		delimiter(std::move(delim)),
+		line(l)
 	{}
 
 	friend bool operator==(const String&, const String&) = default;
 
 	std::string value;
 	StringDelimiter delimiter;
+	std::size_t line = INVALID_LINE_NUMBER;
 };
 
 struct Operator
 {
 	Operator() = default;
-	Operator(std::string str):
-		value(std::move(str))
+	Operator(std::string str, std::size_t l):
+		value(std::move(str)),
+		line(l)
 	{}
 
 	friend bool operator==(const Operator&, const Operator&) = default;
 
 	std::string value;
+	std::size_t line = INVALID_LINE_NUMBER;
 };
 
 struct Comment

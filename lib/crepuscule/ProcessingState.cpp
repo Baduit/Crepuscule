@@ -51,7 +51,7 @@ void ProcessingState::add_to_current_string(std::string_view str)
 
 void ProcessingState::begin_string(const StringDelimiter& delim)
 {
-	_current_string.emplace(delim);
+	_current_string.emplace(delim, _current_line);
 }
 
 void ProcessingState::begin_comment(const CommentDelimiter& delim)
@@ -133,6 +133,11 @@ std::optional<std::string_view> ProcessingState::retrieve_last_line()
 		return std::string_view(&(*_it_line_begin), size);
 	else
 		return {};
+}
+
+std::size_t ProcessingState::get_current_line_number() const
+{
+	return _current_line;
 }
 
 } // namespace crepuscule

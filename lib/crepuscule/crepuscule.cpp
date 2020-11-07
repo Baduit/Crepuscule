@@ -195,7 +195,7 @@ void Tokenizer::consume_word(ProcessingState& state) const
 		auto keyword = std::find(_config.keywords.begin(), _config.keywords.end(), word);
 		if (keyword != _config.keywords.end())
 		{
-			state.emplace_token<Keyword>(*keyword);
+			state.emplace_token<Keyword>(*keyword, state.get_current_line_number());
 			word_used = true;
 		}
 
@@ -204,7 +204,7 @@ void Tokenizer::consume_word(ProcessingState& state) const
 			auto integer = _config.integer_reader(word);
 			if (integer)
 			{
-				state.emplace_token<Integer>(*integer);
+				state.emplace_token<Integer>(*integer, state.get_current_line_number());
 				word_used = true;
 			}
 		}
@@ -214,13 +214,13 @@ void Tokenizer::consume_word(ProcessingState& state) const
 			auto number = _config.number_reader(word);
 			if (number)
 			{
-				state.emplace_token<Number>(*number);
+				state.emplace_token<Number>(*number, state.get_current_line_number());
 				word_used = true;
 			}
 		}
 
 		if (!word_used)
-			state.emplace_token<Word>(std::string(word));
+			state.emplace_token<Word>(std::string(word), state.get_current_line_number());
 	}
 }
 

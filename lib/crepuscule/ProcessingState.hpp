@@ -49,6 +49,8 @@ class ProcessingState
 		std::string_view retrieve_line();
 		std::optional<std::string_view> retrieve_last_line();
 
+		std::size_t get_current_line_number() const;
+
 	private:
 		std::vector<Expression*> _expression_stack;
 		std::optional<String> _current_string;
@@ -57,6 +59,7 @@ class ProcessingState
 		std::string_view::const_iterator _it_end;
 		std::string_view::const_iterator _it_token_begin;
 		std::string_view::const_iterator _it_line_begin;
+		std::size_t _current_line = INVALID_LINE_NUMBER;
 };
 
 	

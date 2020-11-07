@@ -76,7 +76,7 @@ class Tokenizer
 			}
 			else if (max_size == ope_size)
 			{
-				state.emplace_token<Operator>(**ope);
+				state.emplace_token<Operator>(**ope, state.get_current_line_number());
 			}
 			// Nothing to do if it is just a delimiter
 			return max_size;
