@@ -6,6 +6,7 @@
 #include <limits>
 
 #include <crepuscule/Config.hpp>
+#include <crepuscule/helpers.hpp>
 
 namespace crepuscule
 {
@@ -129,20 +130,20 @@ struct Operator
 struct Comment
 {
 	Comment() = default;
-	Comment(std::string v, std::string delim_begin, std::string delim_end):
-		value(std::move(v)),
+	Comment(std::string_view v, std::string delim_begin, std::string delim_end):
+		value(v),
 		delimiter(CommentDelimiter{ std::move(delim_begin), std::move(delim_end) })
 	{}
 
 	template <typename It>
 	Comment(It begin_value, It end_value, const CommentDelimiter& delim):
-		value(begin_value, end_value),
+		value(helpers::range_to_string_view(begin_value, end_value)),
 		delimiter(delim)
 	{}
 
 	friend bool operator==(const Comment&, const Comment&) = default;
 
-	std::string value;
+	std::string_view value;
 	CommentDelimiter delimiter;
 };
 

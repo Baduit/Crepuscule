@@ -1,5 +1,6 @@
 #include <crepuscule/ProcessingState.hpp>
 #include <crepuscule/endline.hpp>
+#include <crepuscule/helpers.hpp>
 
 namespace crepuscule
 {
@@ -20,18 +21,12 @@ ProcessingState::operator bool() const
 
 std::string_view ProcessingState::get_current_view() const
 {
-	// MSVC does not support this for now
-	//return std::string_view(_it_input, _it_end);
-	auto size = static_cast<std::size_t>(_it_end - _it_input);
-	return std::string_view(&(*_it_input), size);
+	return helpers::range_to_string_view(_it_input, _it_end);
 }
 
 std::string_view ProcessingState::get_current_word() const
 {
-	// MSVC does not support this for now
-	//return std::string_view(_it_token_begin, _it_input);
-	auto size = static_cast<std::size_t>(_it_input - _it_token_begin);
-	return std::string_view(&(*_it_token_begin), size);
+	return helpers::range_to_string_view(_it_token_begin, _it_input);
 }
 
 void ProcessingState::update_token_begin()
@@ -122,10 +117,7 @@ std::string_view ProcessingState::retrieve_line()
 	auto old_it_line_begin = _it_line_begin;
 	_it_line_begin = _it_input + 1;
 
-	// MSVC does not support this for now
-	//return std::string_view(_it_token_begin, _it_input);
-	auto size = static_cast<std::size_t>(_it_input - old_it_line_begin);
-	return std::string_view(&(*old_it_line_begin), size + 1);
+	return helpers::range_to_string_view(old_it_line_begin, _it_input + 1);
 }
 
 std::optional<std::string_view> ProcessingState::retrieve_last_line()
