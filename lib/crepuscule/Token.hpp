@@ -24,9 +24,7 @@ struct Operator;
 using Token = std::variant<Keyword, Word, Integer, Number, String, Operator, Comment, Expression>;
 
 /*
-	TODO: instead of making a deep copy of the delimiters I could:
-	use a shared_ptr and always use a pointer to the same instance
-	=> easy to use, hard to use the wrong way and probably faster (benchmark needed)
+	TODO: No deep copies of the delimiters, use view over something stored in the result
 */
 
 
