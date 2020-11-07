@@ -26,8 +26,11 @@ class Tokenizer
 		Tokenizer(Config&& conf);
 
 		Result operator()(std::string_view input) const;
+		Result operator()(std::string&& input) const;
 
 	private:
+		void tokenize(Result& result) const;
+
 		enum class IterationState
 		{
 			CONTINUE_ITERATION,

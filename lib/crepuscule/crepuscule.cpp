@@ -25,6 +25,23 @@ Result Tokenizer::operator()(std::string_view input) const
 	Result result;
 	result.text = std::string(input);
 
+	tokenize(result);
+
+	return result;
+}
+
+Result Tokenizer::operator()(std::string&& input) const
+{
+	Result result;
+	result.text = std::move(input);
+
+	tokenize(result);
+
+	return result;
+}
+
+void Tokenizer::tokenize(Result& result) const
+{
 	Expression& main_expression = result.expression;
 	ProcessingState state(result.text, main_expression);
 
@@ -39,8 +56,6 @@ Result Tokenizer::operator()(std::string_view input) const
 			&Tokenizer::handle_ordinary_character);
 	}
 	handle_last_line(state, result);
-
-	return result;
 }
 
 void Tokenizer::prepare_config()
