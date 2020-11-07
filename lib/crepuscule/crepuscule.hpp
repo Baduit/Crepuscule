@@ -40,6 +40,10 @@ class Tokenizer
 		IterationState handle_end_string(ProcessingState& state) const;
 		IterationState handle_solo_and_begin_delimiters(ProcessingState& state) const;
 		IterationState handle_end_expression(ProcessingState& state) const;
+		void handle_ordinary_character(ProcessingState& state) const;
+
+		void handle_line(ProcessingState& state, Result& result) const;
+		void handle_last_line(ProcessingState& state, Result& result) const;
 
 		void consume_word(ProcessingState& state) const;
 		auto get_it_delimiters(std::string_view current_view) const;
@@ -73,6 +77,21 @@ class Tokenizer
 			}
 			// Nothing to do if it is just a delimiter
 			return max_size;
+		}
+
+		template<typename Method, typename... FollowingMethods> 
+		void process(ProcessingState& state, Method method) const
+		{
+			(this->*method)(state);
+		}
+
+
+		template<typename Method, typename... FollowingMethods> 
+		void process(ProcessingState& state, Method method, FollowingMethods&&... following_methods) const
+		{
+			IterationState iteration_state = (this->*method)(state);
+			if (iteration_state == IterationState::CONTINUE_ITERATION)
+				process(state, std::forward<FollowingMethods>(following_methods)...);
 		}
 
 	private:

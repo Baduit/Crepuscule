@@ -30,25 +30,15 @@ Result Tokenizer::operator()(std::string_view input) const
 
 	while (state)
 	{
-		std::string_view current_view = state.get_current_view();
-
-		if (current_view.starts_with(endline_delimiter))
-			result.lines.push_back(state.retrieve_line());
-
-		auto iteration_state = handle_end_comment(state);
-		if (iteration_state == IterationState::CONTINUE_ITERATION)
-			iteration_state = handle_end_string(state);
-		if (iteration_state == IterationState::CONTINUE_ITERATION)	
-			iteration_state = handle_solo_and_begin_delimiters(state);
-		if (iteration_state == IterationState::CONTINUE_ITERATION)
-			iteration_state = handle_end_expression(state);
-		if (iteration_state == IterationState::CONTINUE_ITERATION)
-			state.advance_input(1);
+		handle_line(state, result);
+		process(state,
+			&Tokenizer::handle_end_comment,
+			&Tokenizer::handle_end_string,
+			&Tokenizer::handle_solo_and_begin_delimiters,
+			&Tokenizer::handle_end_expression,
+			&Tokenizer::handle_ordinary_character);
 	}
-
-	auto last_line = state.retrieve_last_line();
-	if (last_line)
-		result.lines.push_back(*last_line);
+	handle_last_line(state, result);
 
 	return result;
 }
@@ -160,6 +150,24 @@ Tokenizer::IterationState Tokenizer::handle_end_expression(ProcessingState& stat
 	{
 		return IterationState::CONTINUE_ITERATION;
 	}
+}
+
+void Tokenizer::handle_ordinary_character(ProcessingState& state) const
+{
+	state.advance_input(1);
+}
+
+void Tokenizer::handle_line(ProcessingState& state, Result& result) const
+{
+	if (state.get_current_view().starts_with(endline_delimiter))
+		result.lines.push_back(state.retrieve_line());
+}
+
+void Tokenizer::handle_last_line(ProcessingState& state, Result& result) const
+{
+	auto last_line = state.retrieve_last_line();
+	if (last_line)
+		result.lines.push_back(*last_line);
 }
 
 void Tokenizer::consume_word(ProcessingState& state) const
