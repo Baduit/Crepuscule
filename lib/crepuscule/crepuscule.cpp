@@ -105,7 +105,8 @@ Result Tokenizer::operator()(std::string_view input) const
 						auto number = _config.number_reader(word);
 						if (number)
 						{
-							state.emplace_token<Number>(*number);							word_used = true;
+							state.emplace_token<Number>(*number);
+							word_used = true;
 						}
 					}
 
