@@ -81,8 +81,9 @@ void complete_pseudo_langage_tokenization()
 				}
 			}
 		)";
-	
-	auto expression = crepuscule::Tokenizer(config)(text);
+
+	auto result = crepuscule::Tokenizer(config)(text);
+	auto& expression = result.expression;
 
 	expect((!expression.delimiter) >> fatal) << "The main expression does not have delimiter";
 	expect(expression.value.size() == 21) << "Check number of tokens";

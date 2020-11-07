@@ -14,9 +14,10 @@ Tokenizer::Tokenizer(Config conf):
 	prepare_config();
 }
 
-Expression Tokenizer::operator()(std::string_view input)
+Result Tokenizer::operator()(std::string_view input)
 {
-	Expression main_expression;
+	Result result;
+	Expression& main_expression = result.expression;
 	ProcessingState state(input, main_expression);
 
 	while (state)
@@ -142,7 +143,7 @@ Expression Tokenizer::operator()(std::string_view input)
 		}
 	}
 
-	return main_expression;
+	return result;
 }
 
 void Tokenizer::prepare_config()

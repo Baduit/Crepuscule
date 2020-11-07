@@ -9,12 +9,19 @@
 namespace crepuscule
 {
 
+struct Result
+{
+	std::string text;
+	std::vector<std::string_view> lines;
+	Expression expression;
+};
+
 class Tokenizer
 {
 	public:
 		Tokenizer(Config conf);
 
-		Expression operator()(std::string_view input);
+		Result operator()(std::string_view input);
 
 	private:
 		void prepare_config();
