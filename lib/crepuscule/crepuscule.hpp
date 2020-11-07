@@ -26,8 +26,6 @@ class Tokenizer
 		Result operator()(std::string_view input) const;
 
 	private:
-		static constexpr std::string_view endline_delimiter = "\n";
-
 		void prepare_config();
 
 	private:

@@ -1,4 +1,5 @@
 #include <crepuscule/TokenizingState.hpp>
+#include <crepuscule/endline.hpp>
 
 namespace crepuscule
 {
@@ -9,6 +10,7 @@ ProcessingState::ProcessingState(std::string_view input, Expression& main_expres
 	_it_input = input.cbegin();
 	update_token_begin();
 	_it_end = input.cend();
+	_it_line_begin = _it_input;
 }	
 
 ProcessingState::operator bool() const
@@ -111,6 +113,26 @@ void ProcessingState::close_current_comment()
 	_current_comment_delimiter.reset();
 	advance_input(delimiter_size);
 	update_token_begin();
+}
+
+std::string_view ProcessingState::retrieve_line()
+{
+	auto old_it_line_begin = _it_line_begin;
+	_it_line_begin = _it_input + 1;
+
+	// MSVC does not support this for now
+	//return std::string_view(_it_token_begin, _it_input);
+	auto size = static_cast<std::size_t>(_it_input - old_it_line_begin);
+	return std::string_view(&(*old_it_line_begin), size + 1);
+}
+
+std::optional<std::string_view> ProcessingState::retrieve_last_line()
+{
+	auto size = static_cast<std::size_t>(_it_input - _it_line_begin);
+	if (size != 0)
+		return std::string_view(&(*_it_line_begin), size);
+	else
+		return {};
 }
 
 } // namespace crepuscule

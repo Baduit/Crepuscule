@@ -1,5 +1,6 @@
 #include <iostream>
 #include <utility>
+#include <optional>
 
 #include <boost_ut/ut.hpp>
 
@@ -82,6 +83,7 @@ void complete_pseudo_langage_tokenization()
 			}
 		)";
 
+
 	auto result = crepuscule::Tokenizer(config)(text);
 	auto& expression = result.expression;
 
@@ -146,7 +148,54 @@ void complete_pseudo_langage_tokenization()
 	expect(subexpression->value[2] == crepuscule::Token(crepuscule::Integer(0))) << "subexpression: integer 0";
 }
 
+void test_lines()
+{
+	{
+		std::vector<std::string_view> lines = 
+			{
+				"toto\n",
+				"tata\n",
+				"zefz zefr ze ze rze zer \n",
+				"zerze r\\n ezfze zerzer\n",
+				"ergerg"
+			};
+
+		std::string text;
+		for (auto l: lines)
+			text += l;
+
+		auto result = crepuscule::Tokenizer({})(text);
+
+		expect((result.lines.size() == lines.size()) >> fatal) << "Check number of lines";
+
+		for (std::size_t i = 0; i < lines.size(); ++i)
+			expect(result.lines[i] == lines[i]) << ("Check line individually: " + std::to_string(i));
+	}
+
+	{
+		std::vector<std::string_view> lines = 
+			{
+				"toto\n",
+				"tata\n",
+				"zefz zefr ze ze rze zer \n",
+				"zerze r\\n ezfze zerzer\n",
+			};
+
+		std::string text;
+		for (auto l: lines)
+			text += l;
+
+		auto result = crepuscule::Tokenizer({})(text);
+
+		expect((result.lines.size() == lines.size()) >> fatal) << "Check number of lines";
+
+		for (std::size_t i = 0; i < lines.size(); ++i)
+			expect(result.lines[i] == lines[i]) << ("Check line individually: " + std::to_string(i));
+	}
+}
+
 int main()
 {
 	"complete_pseudo_langage_tokenization"_test = complete_pseudo_langage_tokenization;
+	"lines"_test = test_lines;
 }

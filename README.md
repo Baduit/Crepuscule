@@ -27,7 +27,7 @@ So, I have written this, it only tokenizes (no parsing); the configuration use a
 - Easy to use
 - Hard to misuse
 - No need to learn a new langage or a DSL
-- No dependy
+- No dependency
 
 # Non goals
 - Be the most complete tokenizing library

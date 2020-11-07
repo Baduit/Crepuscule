@@ -4,6 +4,7 @@
 #include <crepuscule/crepuscule.hpp>
 #include <crepuscule/helpers.hpp>
 #include <crepuscule/TokenizingState.hpp>
+#include <crepuscule/endline.hpp>
 
 namespace crepuscule
 {
@@ -31,6 +32,10 @@ Result Tokenizer::operator()(std::string_view input) const
 	while (state)
 	{
 		std::string_view current_view = state.get_current_view();
+
+		if (current_view.starts_with(endline_delimiter))
+			result.lines.push_back(state.retrieve_line());
+
 		if (auto comment_end_delimiter = state.get_current_comment_end_delimiter();
 			comment_end_delimiter)
 		{
@@ -150,6 +155,10 @@ Result Tokenizer::operator()(std::string_view input) const
 			}
 		}
 	}
+
+	auto last_line = state.retrieve_last_line();
+	if (last_line)
+		result.lines.push_back(*last_line);
 
 	return result;
 }

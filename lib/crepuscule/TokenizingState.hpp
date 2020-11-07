@@ -46,6 +46,9 @@ class ProcessingState
 		void close_current_string();
 		void close_current_comment();
 
+		std::string_view retrieve_line();
+		std::optional<std::string_view> retrieve_last_line();
+
 	private:
 		std::vector<Expression*> _expression_stack;
 		std::optional<String> _current_string;
@@ -53,6 +56,7 @@ class ProcessingState
 		std::string_view::const_iterator _it_input;
 		std::string_view::const_iterator _it_end;
 		std::string_view::const_iterator _it_token_begin;
+		std::string_view::const_iterator _it_line_begin;
 };
 
 	
