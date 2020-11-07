@@ -47,14 +47,14 @@ struct Keyword
 struct Word
 {
 	Word() = default;
-	Word(std::string str, std::size_t l):
-		value(std::move(str)),
+	Word(std::string_view str, std::size_t l):
+		value(str),
 		line(l)
 	{}
 
 	friend bool operator==(const Word&, const Word&) = default;
 
-	std::string value;
+	std::string_view value;
 	std::size_t line = INVALID_LINE_NUMBER;
 };
 

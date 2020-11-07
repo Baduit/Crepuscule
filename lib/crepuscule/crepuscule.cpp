@@ -220,7 +220,7 @@ void Tokenizer::consume_word(ProcessingState& state) const
 		}
 
 		if (!word_used)
-			state.emplace_token<Word>(std::string(word), state.get_current_line_number());
+			state.emplace_token<Word>(word, state.get_current_line_number());
 	}
 }
 
