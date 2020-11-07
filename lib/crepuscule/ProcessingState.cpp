@@ -117,6 +117,8 @@ void ProcessingState::close_current_comment()
 
 std::string_view ProcessingState::retrieve_line()
 {
+	++_current_line;
+
 	auto old_it_line_begin = _it_line_begin;
 	_it_line_begin = _it_input + 1;
 

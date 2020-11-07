@@ -59,7 +59,7 @@ class ProcessingState
 		std::string_view::const_iterator _it_end;
 		std::string_view::const_iterator _it_token_begin;
 		std::string_view::const_iterator _it_line_begin;
-		std::size_t _current_line = INVALID_LINE_NUMBER;
+		std::size_t _current_line = 1;
 };
 
 	
