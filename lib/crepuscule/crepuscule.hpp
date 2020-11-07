@@ -9,6 +9,7 @@
 namespace crepuscule
 {
 
+// The expression and lines are invalidated if text goes out of scope
 struct Result
 {
 	std::string text;
@@ -21,9 +22,11 @@ class Tokenizer
 	public:
 		Tokenizer(Config conf);
 
-		Result operator()(std::string_view input);
+		Result operator()(std::string_view input) const;
 
 	private:
+		static constexpr std::string_view endline_delimiter = "\n";
+
 		void prepare_config();
 
 	private:

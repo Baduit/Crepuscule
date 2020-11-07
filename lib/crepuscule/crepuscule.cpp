@@ -14,11 +14,13 @@ Tokenizer::Tokenizer(Config conf):
 	prepare_config();
 }
 
-Result Tokenizer::operator()(std::string_view input)
+Result Tokenizer::operator()(std::string_view input) const
 {
 	Result result;
+	result.text = std::string(input);
+
 	Expression& main_expression = result.expression;
-	ProcessingState state(input, main_expression);
+	ProcessingState state(result.text, main_expression);
 
 	while (state)
 	{
