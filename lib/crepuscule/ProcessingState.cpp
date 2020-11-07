@@ -1,4 +1,4 @@
-#include <crepuscule/TokenizingState.hpp>
+#include <crepuscule/ProcessingState.hpp>
 #include <crepuscule/endline.hpp>
 
 namespace crepuscule
