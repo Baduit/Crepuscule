@@ -51,8 +51,8 @@ void Tokenizer::tokenize(Result& result) const
 		process(state,
 			&Tokenizer::handle_end_comment,
 			&Tokenizer::handle_end_string,
-			&Tokenizer::handle_solo_and_begin_delimiters,
 			&Tokenizer::handle_end_expression,
+			&Tokenizer::handle_solo_and_begin_delimiters,
 			&Tokenizer::handle_ordinary_character);
 	}
 	handle_last_line(state, result);
