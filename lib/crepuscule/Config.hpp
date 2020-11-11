@@ -31,9 +31,9 @@ inline std::strong_ordering compare_string(const std::string& a, const std::stri
 struct StringDelimiter
 {
 	bool operator==(const StringDelimiter&) const = default;
-	bool operator<(const StringDelimiter& other) const
+	bool operator>(const StringDelimiter& other) const
 	{
-		return begin < other.begin;
+		return begin > other.begin;
 	}
 	// MSVC is not ready with <=>
 	/* auto operator<=>(const StringDelimiter& other) const
@@ -55,9 +55,9 @@ struct CustomStringSequence
 		// Only the sequence matters when sorting
 		return compare_string(sequence, other.replacement);
 	} */
-	bool operator<(const CustomStringSequence& other) const
+	bool operator>(const CustomStringSequence& other) const
 	{
-		return sequence < other.sequence;
+		return sequence > other.sequence;
 	}
 
 	std::string sequence;
@@ -72,9 +72,9 @@ struct SubexpressionDelimiter
 		return begin == other.begin && end == other.end;
 	}
 
-	bool operator<(const SubexpressionDelimiter& other) const
+	bool operator>(const SubexpressionDelimiter& other) const
 	{
-		return begin < other.begin;
+		return begin > other.begin;
 	}
 	// MSVC is not ready with <=>
 	/* auto operator<=>(const SubexpressionDelimiter& other) const
@@ -90,9 +90,9 @@ struct SubexpressionDelimiter
 struct CommentDelimiter
 {
 	bool operator==(const CommentDelimiter&) const = default;
-	bool operator<(const CommentDelimiter& other) const
+	bool operator>(const CommentDelimiter& other) const
 	{
-		return begin < other.begin;
+		return begin > other.begin;
 	}
 	// MSVC is not ready with <=>
 	/* auto operator<=>(const CommentDelimiter& other) const

@@ -61,9 +61,9 @@ void Tokenizer::tokenize(Result& result) const
 void Tokenizer::prepare_config()
 {
 	auto sort_descending = 
-		[](const auto& a, const auto& b)
+		[](const auto& a, const auto& b) -> bool
 		{
-			return !(a < b);
+			return (a > b);
 		};
 
 	std::sort(_config.string_delimiters.begin(), _config.string_delimiters.end(), sort_descending);

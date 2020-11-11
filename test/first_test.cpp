@@ -195,8 +195,32 @@ void test_lines()
 	}
 }
 
+void other()
+{
+	Config config;
+
+	config.subexpression_delimiters.push_back({ "[[", "]]" });
+	config.subexpression_delimiters.push_back({ "==", "==" });
+	config.subexpression_delimiters.push_back({ "'''", "'''" });
+	config.subexpression_delimiters.push_back({ "''", "''" });
+	config.subexpression_delimiters.push_back({ "{{", "}}" });
+	config.subexpression_delimiters.push_back({ "<ref>", "</ref>" });
+	config.subexpression_delimiters.push_back({ "[[", "]]" });
+
+	config.keywords.emplace_back("File:");
+	config.keywords.emplace_back("Category:");
+
+	/* std::string_view text =
+		"First line\n"
+		"Second line\n"
+		"Toto is fame"; */
+
+	Tokenizer t(config);
+}
+
 int main()
 {
 	"complete_pseudo_langage_tokenization"_test = complete_pseudo_langage_tokenization;
 	"lines"_test = test_lines;
+	"other"_test = other;
 }
