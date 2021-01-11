@@ -56,6 +56,7 @@ void Tokenizer::tokenize(Result& result) const
 			&Tokenizer::handle_ordinary_character);
 	}
 	handle_last_line(state, result);
+	consume_word(state);
 }
 
 void Tokenizer::prepare_config()
