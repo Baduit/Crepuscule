@@ -78,6 +78,8 @@ std::string_view range_to_string_view(It begin, It end)
 {
 	// MSVC does not support this for now
 	//return std::string_view(_it_input, _it_end);
+	if (begin == end)
+		return {};
 	auto size = static_cast<std::size_t>(end - begin);
 	return std::string_view(&(*begin), size);
 }
